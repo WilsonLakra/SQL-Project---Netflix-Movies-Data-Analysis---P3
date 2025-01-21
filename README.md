@@ -123,11 +123,13 @@ the comma (,) delimiter.
 ### 5. Identify the Longest Movie
 
 ```sql
-SELECT 
-    *
+SELECT *
 FROM netflix
-WHERE type = 'Movie'
-ORDER BY SPLIT_PART(duration, ' ', 1)::INT DESC;
+WHERE 
+	type = 'Movie'
+	AND
+	duration = (SELECT MAX(duration) FROM netflix);
+
 ```
 
 **Objective:** Find the movie with the longest duration.
@@ -135,9 +137,32 @@ ORDER BY SPLIT_PART(duration, ' ', 1)::INT DESC;
 ### 6. Find Content Added in the Last 5 Years
 
 ```sql
-SELECT *
+SELECT *,
+	TO_DATE(date_added, 'Month DD, YYYY')
 FROM netflix
-WHERE TO_DATE(date_added, 'Month DD, YYYY') >= CURRENT_DATE - INTERVAL '5 years';
+WHERE 
+	TO_DATE(date_added, 'Month DD, YYYY') >= CURRENT_DATE - INTERVAL '5 years';
+
+/*
+SELECT *,
+	TO_DATE(date_added, 'Month DD, YYYY')
+FROM netflix;	
+*/
+/*
+Explanation:
+Converts the date_added column in the netflix table into a proper DATE format using the TO_DATE function 
+in PostgreSQL. This is helpful if the date_added column is stored as a TEXT type but you want to work with it 
+as a DATE type.
+*/
+
+-- SELECT  CURRENT_DATE - INTERVAL '5 years';  -- date_five_years_ago
+/*
+Explanation:
+1. CURRENT_DATE: Retrieves the current date without a time component.
+2. INTERVAL '5 years': Specifies a time interval of 5 years.
+3. -: Subtracts the interval from the current date to compute the date 5 years ago.
+*/
+
 ```
 
 **Objective:** Retrieve content added to Netflix in the last 5 years.
