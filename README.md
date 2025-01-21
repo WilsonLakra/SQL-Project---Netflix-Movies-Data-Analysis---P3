@@ -192,10 +192,25 @@ WHERE director_name = 'Rajiv Chilaka';
 ### 8. List All TV Shows with More Than 5 Seasons
 
 ```sql
-SELECT *
+SELECT * 
 FROM netflix
 WHERE type = 'TV Show'
-  AND SPLIT_PART(duration, ' ', 1)::INT > 5;
+	AND SPLIT_PART(duration, ' ', 1)::INT > 5;   -- ::INT Casts the extracted string (e.g., '6') into an integer 
+												  -- so it can be used in numerical comparisons.
+/*
+SELECT
+	SPLIT_PART('Apple Banana Cherry', ' ', 1);  -- Apple
+*/
+/*
+Explanation:
+1. SPLIT_PART(string, delimiter, field):
+	Splits the string into parts using the specified delimiter.
+	Returns the part specified by the field (an integer indicating the 1-based index of the part to extract).
+2. Arguments:
+	'Apple Banana Cherry': The string to split.
+	' ' (space): The delimiter used to separate the string.
+	1: Specifies that the first part (word) is to be returned.
+*/
 ```
 
 **Objective:** Identify TV shows with more than 5 seasons.
