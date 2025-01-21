@@ -78,6 +78,9 @@ WHERE
 ### 3. List All Movies Released in a Specific Year (e.g., 2020)
 
 ```sql
+-- filter 2020
+-- only movies
+
 SELECT *
 FROM netflix
 WHERE 
