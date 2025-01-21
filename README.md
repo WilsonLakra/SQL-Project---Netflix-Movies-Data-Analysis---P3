@@ -219,10 +219,11 @@ Explanation:
 
 ```sql
 SELECT 
-    UNNEST(STRING_TO_ARRAY(listed_in, ',')) AS genre,
-    COUNT(*) AS total_content
+	UNNEST(STRING_TO_ARRAY(listed_in, ' ')) AS genre,
+	COUNT(show_id) AS total_content
 FROM netflix
 GROUP BY 1;
+
 ```
 
 **Objective:** Count the number of content items in each genre.
@@ -232,18 +233,14 @@ return top 5 year with highest avg content release!
 
 ```sql
 SELECT 
-    country,
-    release_year,
-    COUNT(show_id) AS total_release,
-    ROUND(
-        COUNT(show_id)::numeric /
-        (SELECT COUNT(show_id) FROM netflix WHERE country = 'India')::numeric * 100, 2
-    ) AS avg_release
-FROM netflix
+	EXTRACT(YEAR FROM TO_DATE(date_added, 'Month, DD, YYYY')) AS year,
+	COUNT(*) AS yearly_content,
+	ROUND(
+	COUNT(*) :: numeric / (SELECT COUNT(*) FROM netflix WHERE country = 'India') :: numeric * 100 
+	, 2) AS avg_content_per_year
+FROM netflix	
 WHERE country = 'India'
-GROUP BY country, release_year
-ORDER BY avg_release DESC
-LIMIT 5;
+GROUP BY 1;
 ```
 
 **Objective:** Calculate and rank years by the average number of content releases by India.
