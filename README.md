@@ -62,10 +62,10 @@ SELECT
 FROM 
 (
 	SELECT 
-			type,
-			rating,
-			COUNT(*),
-			RANK() OVER(PARTITION BY type ORDER BY COUNT(*) DESC) AS ranking
+		type,
+		rating,
+		COUNT(*),
+		RANK() OVER(PARTITION BY type ORDER BY COUNT(*) DESC) AS ranking
 	FROM netflix
 	GROUP BY 1, 2
 ) AS t1
@@ -78,9 +78,13 @@ WHERE
 ### 3. List All Movies Released in a Specific Year (e.g., 2020)
 
 ```sql
-SELECT * 
+SELECT *
 FROM netflix
-WHERE release_year = 2020;
+WHERE 
+	type = 'Movie' 
+	AND 
+	release_year = 2020;
+
 ```
 
 **Objective:** Retrieve all movies released in a specific year.
@@ -88,18 +92,27 @@ WHERE release_year = 2020;
 ### 4. Find the Top 5 Countries with the Most Content on Netflix
 
 ```sql
-SELECT * 
-FROM
-(
-    SELECT 
-        UNNEST(STRING_TO_ARRAY(country, ',')) AS country,
-        COUNT(*) AS total_content
-    FROM netflix
-    GROUP BY 1
-) AS t1
-WHERE country IS NOT NULL
-ORDER BY total_content DESC
+SELECT 
+	UNNEST(STRING_TO_ARRAY(country, ',')) AS new_country,
+	COUNT(show_id) AS total_content
+FROM netflix
+GROUP BY 1
+ORDER BY 2 DESC
 LIMIT 5;
+
+/*
+SELECT 
+	UNNEST(STRING_TO_ARRAY(country, ',')) AS new_country
+FROM netflix;
+*/
+/*
+Explanation:
+1. STRING_TO_ARRAY(country, ','): Splits the country column (a string) into an array of substrings based on 
+the comma (,) delimiter.
+2. UNNEST(): Converts the array produced by STRING_TO_ARRAY into a set of individual rows.
+3. AS new_country: Assigns an alias (new_country) to the output column for readability.
+*/
+
 ```
 
 **Objective:** Identify the top 5 countries with the highest number of content items.
