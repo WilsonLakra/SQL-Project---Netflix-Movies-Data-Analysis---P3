@@ -309,18 +309,40 @@ LIMIT 10;
 ### 15. Categorize Content Based on the Presence of 'Kill' and 'Violence' Keywords
 
 ```sql
+WITH new_table
+AS
+(
+SELECT *,
+	CASE
+	WHEN 
+		description ILIKE '%Kill%' OR 
+		description ILIKE '%Violence%' THEN 'Bad_Content'
+		ELSE 'Good_Content'
+	END category
+FROM netflix
+)
 SELECT 
-    category,
-    COUNT(*) AS content_count
+	category,
+	COUNT(*) AS total_content
+FROM new_table
+GROUP BY 1;
+
+
+-- Second Method
+SELECT 
+	category,
+	COUNT(*) AS total_content
 FROM (
-    SELECT 
-        CASE 
-            WHEN description ILIKE '%kill%' OR description ILIKE '%violence%' THEN 'Bad'
-            ELSE 'Good'
-        END AS category
-    FROM netflix
-) AS categorized_content
+SELECT 
+	CASE
+		WHEN description ILIKE '%Kill%' OR description ILIKE '%Violence%' THEN 'Bad_Content'
+		ELSE 'Good_Content'
+	END AS category
+FROM netflix
+) AS categorised_content
 GROUP BY category;
+
+
 ```
 
 **Objective:** Categorize content as 'Bad' if it contains 'kill' or 'violence' and 'Good' otherwise. Count the number of items in each category.
