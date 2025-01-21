@@ -248,9 +248,10 @@ GROUP BY 1;
 ### 11. List All Movies that are Documentaries
 
 ```sql
-SELECT * 
+SELECT *
 FROM netflix
-WHERE listed_in LIKE '%Documentaries';
+WHERE listed_in ILIKE '%Documentaries%';
+
 ```
 
 **Objective:** Retrieve all movies classified as documentaries.
@@ -258,9 +259,10 @@ WHERE listed_in LIKE '%Documentaries';
 ### 12. Find All Content Without a Director
 
 ```sql
-SELECT * 
+SELECT *
 FROM netflix
 WHERE director IS NULL;
+
 ```
 
 **Objective:** List content that does not have a director.
@@ -268,10 +270,11 @@ WHERE director IS NULL;
 ### 13. Find How Many Movies Actor 'Salman Khan' Appeared in the Last 10 Years
 
 ```sql
-SELECT * 
+SELECT *
 FROM netflix
-WHERE casts LIKE '%Salman Khan%'
-  AND release_year > EXTRACT(YEAR FROM CURRENT_DATE) - 10;
+WHERE casts ILIKE '%Salman Khan%'
+AND release_year > EXTRACT(YEAR FROM CURRENT_DATE) - 10;
+
 ```
 
 **Objective:** Count the number of movies featuring 'Salman Khan' in the last 10 years.
@@ -280,10 +283,22 @@ WHERE casts LIKE '%Salman Khan%'
 
 ```sql
 SELECT 
-    UNNEST(STRING_TO_ARRAY(casts, ',')) AS actor,
-    COUNT(*)
+	UNNEST(STRING_TO_ARRAY(casts, ',')) AS actors,
+	COUNT(*) AS total_content
 FROM netflix
-WHERE country = 'India'
+WHERE country ILIKE '%India%'
+AND type = 'Movie'
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 10;
+
+
+-- Second Method
+SELECT 
+	UNNEST(STRING_TO_ARRAY(casts, ',')) AS actor,
+	COUNT(*)
+FROM netflix
+WHERE country ILIKE '%India%'
 GROUP BY actor
 ORDER BY COUNT(*) DESC
 LIMIT 10;
