@@ -170,14 +170,21 @@ Explanation:
 ### 7. Find All Movies/TV Shows by Director 'Rajiv Chilaka'
 
 ```sql
+SELECT * 
+FROM netflix
+WHERE director ILIKE '%Rajiv Chilaka%';
+
+-- NOTE: The ILIKE operator is used for case-insensitive pattern matching.
+
+
 SELECT *
 FROM (
-    SELECT 
-        *,
-        UNNEST(STRING_TO_ARRAY(director, ',')) AS director_name
-    FROM netflix
-) AS t
+	SELECT *,
+	UNNEST(STRING_TO_ARRAY(director, ',')) AS director_name
+	FROM netflix
+	) AS t
 WHERE director_name = 'Rajiv Chilaka';
+
 ```
 
 **Objective:** List all content directed by 'Rajiv Chilaka'.
